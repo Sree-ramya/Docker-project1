@@ -1,0 +1,10 @@
+FROM maven:3.8.4-amazoncorretto-8 AS builder
+WORKDIR / app
+COPY . /app
+RUN cd /app && mvn clean install -Dskiptests
+
+FROM openjdk:latest
+WORKDIR /builder
+COPY --from=builder /app/target/spring-petclinic-2.7.0-SNAPSHOT.jar /builder
+EXPOSE 8080
+CMD ["java","-jar","/builder/spring-petclinic-2.7.0-SNAPSHOT.jar"]
